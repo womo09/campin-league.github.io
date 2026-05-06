@@ -1,4 +1,16 @@
-<script type="module">
+<body>
+
+  <h1>⚽ Criar Jogador</h1>
+
+  <input id="nome" placeholder="Nome">
+  <input id="velocidade" placeholder="Velocidade">
+  <input id="chute" placeholder="Chute">
+
+  <button onclick="salvar()">Salvar</button>
+
+  <div id="perfil"></div>
+
+ <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -52,3 +64,5 @@
 
   carregar();
 </script>
+
+</body>
