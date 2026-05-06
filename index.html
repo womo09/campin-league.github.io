@@ -178,8 +178,8 @@ window.mostrarTela = function(tela) {
 
 async function salvar() {
   const nome = document.getElementById("nome").value;
-  let velocidade = limitar(document.getElementById("velocidade").value);
-  let chute = limitar(document.getElementById("chute").value);
+  let gols = Number(document.getElementById("gols").value) || 0;
+let assistencias = Number(document.getElementById("assistencias").value) || 0;
   const posicao = document.getElementById("posicao").value;
 
   const file = document.getElementById("foto").files[0];
@@ -187,11 +187,11 @@ async function salvar() {
   if (file) {
     const reader = new FileReader();
     reader.onload = async function() {
-      salvarBanco(nome, velocidade, chute, posicao, reader.result);
+      salvarBanco(nome, gols, assistencias, posicao, reader.result);
     };
     reader.readAsDataURL(file);
   } else {
-    salvarBanco(nome, velocidade, chute, posicao, "");
+    salvarBanco(nome, gols, assistencias, posicao, "");
   }
 }
 
@@ -227,18 +227,18 @@ async function carregar() {
     jogadores.push({ id: d.id, ...d.data() });
   });
 
-  jogadores.sort((a, b) => overall(b.velocidade, b.chute) - overall(a.velocidade, a.chute));
+  jogadores.sort((a, b) => overall(b.gols, b.assistencias) - overall(a.velocidade, a.chute));
 
   jogadores.forEach((j, index) => {
     div.innerHTML += `
       <div class="card ${index === 0 ? "top" : ""}">
         <button class="delete" onclick="apagar('${j.id}')">X</button>
-        <div class="overall">${overall(j.velocidade, j.chute)}</div>
+        <div class="overall">${(j.gols || 0) + (j.assistencias || 0)}</div>
         <img src="${j.foto || ""}">
         <h2>${j.nome}</h2>
         <p>${j.posicao}</p>
-        <p>⚡ ${j.velocidade}</p>
-        <p>💥 ${j.chute}</p>
+        <p>⚽ ${j.gols || 0}</p>
+        <p>🎯 ${j.assistencias || 0}</p>
       </div>
     `;
   });
