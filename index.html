@@ -244,14 +244,8 @@ async function carregar() {
   });
 }
 
-window.salvar = salvar;
-window.apagar = apagar;
+// 👇 FUNÇÕES DE PARTIDA (cola aqui)
 
-carregar();
-</script>
-
-</body>
-</html>
 async function salvarPartida() {
   const time1 = Number(document.getElementById("time1").value);
   const time2 = Number(document.getElementById("time2").value);
@@ -269,6 +263,7 @@ async function salvarPartida() {
 
   carregarPartidas();
 }
+
 async function carregarPartidas() {
   const querySnapshot = await getDocs(collection(db, "partidas"));
   const div = document.getElementById("listaPartidas");
@@ -277,7 +272,6 @@ async function carregarPartidas() {
 
   querySnapshot.forEach((doc) => {
     const p = doc.data();
-
     const data = new Date(p.data.seconds * 1000);
 
     div.innerHTML += `
@@ -288,5 +282,15 @@ async function carregarPartidas() {
     `;
   });
 }
+
+// 👇 AGORA ESSA PARTE FICA NO FINAL
+window.salvar = salvar;
+window.apagar = apagar;
 window.salvarPartida = salvarPartida;
+
+carregar();
 carregarPartidas();
+</script>
+
+</body>
+</html>
