@@ -145,7 +145,7 @@ img {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDbi2hDWmR6yw0AoA7dpTlZEWtP7Vw7F4w",
@@ -271,26 +271,85 @@ async function carregarPartidas() {
   div.innerHTML = "";
 
   querySnapshot.forEach((doc) => {
-    const p = doc.data();
+    const p = { id: doc.id, ...doc.data() };
     const data = new Date(p.data.seconds * 1000);
 
-    div.innerHTML += `
-      <div class="card">
-        <h2>Time 1 ${p.time1} x ${p.time2} Time 2</h2>
-        <p>${data.toLocaleDateString()}</p>
-      </div>
-    `;
+   div.innerHTML += `
+  <div class="card">
+    <button class="delete" onclick="apagarPartida('${p.id}')">X</button>
+
+    <button onclick="editarPartida('${p.id}', ${p.time1}, ${p.time2})">✏️</button>
+
+    <button onclick="adicionarGol('${p.id}')">⚽</button>
+
+    <h2>Time 1 ${p.time1} x ${p.time2} Time 2</h2>
+    <p>${data.toLocaleDateString()}</p>
+
+    <p>
+      ${(p.gols || []).map(g => 
+        `⚽ ${g.jogador} (${g.assist || "sem assist"})`
+      ).join("<br>")}
+    </p>
+  </div>
+`;
   });
 }
+  
+async function editarPartida(id, t1, t2) {
+  const novo1 = prompt("Novo placar Time 1:", t1);
+  const novo2 = prompt("Novo placar Time 2:", t2);
 
+  if (novo1 === null || novo2 === null) return;
+
+  await updateDoc(doc(db, "partidas", id), {
+    time1: Number(novo1),
+    time2: Number(novo2)
+  });
+
+  carregarPartidas();
+}
+
+  async function apagarPartida(id) {
+  const senha = prompt("Senha para apagar:");
+
+  if (senha !== SENHA_ADMIN) {
+    alert("Senha incorreta");
+    return;
+  }
+
+  await deleteDoc(doc(db, "partidas", id));
+  carregarPartidas();
+}
+  
+  async function adicionarGol(id) {
+  const jogador = prompt("Quem fez o gol?");
+  const assist = prompt("Assistência (opcional):");
+
+  const ref = doc(db, "partidas", id);
+
+  await updateDoc(ref, {
+    gols: arrayUnion({
+      jogador,
+      assist
+    })
+  });
+
+  carregarPartidas();
+}
+  
 // 👇 AGORA ESSA PARTE FICA NO FINAL
 window.salvar = salvar;
 window.apagar = apagar;
 window.salvarPartida = salvarPartida;
+window.apagarPartida = apagarPartida;
+window.editarPartida = editarPartida;
+window.adicionarGol = adicionarGol;
 
 carregar();
 carregarPartidas();
+
 </script>
 
 </body>
 </html>
+
