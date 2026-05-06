@@ -276,17 +276,33 @@ jogadores.slice(0, 3).forEach((j, i) => {
 
   jogadores.forEach((j, index) => {
     div.innerHTML += `
-      <div class="card ${index === 0 ? "top" : ""}">
-        <button class="delete" onclick="apagar('${j.id}')">X</button>
-        <div class="overall">${(j.gols || 0) + (j.assistencias || 0)}</div>
-        <img src="${j.foto || ""}">
-        <h2>${j.nome}</h2>
-        <p>${j.posicao}</p>
-        <p>⚽ ${j.gols || 0}</p>
-        <p>🎯 ${j.assistencias || 0}</p>
-      </div>
-    `;
+  <div class="card ${index < 3 ? "top" : ""}">
+    <button onclick="editarJogador('${j.id}', ${j.gols || 0}, ${j.assistencias || 0})">✏️</button>
+    <button class="delete" onclick="apagar('${j.id}')">X</button>
+
+    <div class="overall">${(j.gols || 0) + (j.assistencias || 0)}</div>
+    <img src="${j.foto || ""}">
+    <h2>${j.nome}</h2>
+    <p>${j.posicao}</p>
+    <p>⚽ ${j.gols || 0}</p>
+    <p>🎯 ${j.assistencias || 0}</p>
+  </div>
+`;
   });
+}
+
+  async function editarJogador(id, golsAtual, assistAtual) {
+  const novosGols = prompt("Novo número de gols:", golsAtual);
+  const novasAssist = prompt("Novo número de assistências:", assistAtual);
+
+  if (novosGols === null || novasAssist === null) return;
+
+  await updateDoc(doc(db, "jogadores", id), {
+    gols: Number(novosGols) || 0,
+    assistencias: Number(novasAssist) || 0
+  });
+
+  carregar();
 }
 
 // 👇 FUNÇÕES DE PARTIDA (cola aqui)
@@ -391,6 +407,7 @@ window.salvarPartida = salvarPartida;
 window.apagarPartida = apagarPartida;
 window.editarPartida = editarPartida;
 window.adicionarGol = adicionarGol;
+window.editarJogador = editarJogador;
 
 carregar();
 carregarPartidas();
