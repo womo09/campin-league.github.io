@@ -265,13 +265,15 @@ topDiv.innerHTML = "";
 
 jogadores.slice(0, 3).forEach((j, i) => {
   topDiv.innerHTML += `
-    <div class="card top">
-      <h2>#${i + 1} ${j.nome}</h2>
-      <p>🏆 Pontos: ${overall(j.gols, j.assistencias)}</p>
-      <p>⚽ ${j.gols || 0}</p>
-      <p>🎯 ${j.assistencias || 0}</p>
-    </div>
-  `;
+  <div class="card top">
+    <button onclick="editarJogador('${j.id}', ${j.gols || 0}, ${j.assistencias || 0})">✏️</button>
+
+    <h2>#${i + 1} ${j.nome}</h2>
+    <p>🏆 Pontos: ${overall(j.gols, j.assistencias)}</p>
+    <p>⚽ ${j.gols || 0}</p>
+    <p>🎯 ${j.assistencias || 0}</p>
+  </div>
+`;
 });
 
   jogadores.forEach((j, index) => {
