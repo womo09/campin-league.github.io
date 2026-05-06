@@ -134,7 +134,13 @@ img {
 <!-- TELA PARTIDAS -->
 <div id="tela-partidas" style="display:none;">
   <h1>⚽ Partidas</h1>
-  <p>Em breve: sistema de jogos 👀</p>
+
+  <input type="number" id="time1" placeholder="Gols Time 1"><br>
+  <input type="number" id="time2" placeholder="Gols Time 2"><br>
+
+  <button onclick="salvarPartida()">Salvar Partida</button>
+
+  <div id="listaPartidas"></div>
 </div>
 
 <script type="module">
@@ -246,3 +252,41 @@ carregar();
 
 </body>
 </html>
+async function salvarPartida() {
+  const time1 = Number(document.getElementById("time1").value);
+  const time2 = Number(document.getElementById("time2").value);
+
+  if (isNaN(time1) || isNaN(time2)) {
+    alert("Preencha os gols corretamente!");
+    return;
+  }
+
+  await addDoc(collection(db, "partidas"), {
+    time1,
+    time2,
+    data: new Date()
+  });
+
+  carregarPartidas();
+}
+async function carregarPartidas() {
+  const querySnapshot = await getDocs(collection(db, "partidas"));
+  const div = document.getElementById("listaPartidas");
+
+  div.innerHTML = "";
+
+  querySnapshot.forEach((doc) => {
+    const p = doc.data();
+
+    const data = new Date(p.data.seconds * 1000);
+
+    div.innerHTML += `
+      <div class="card">
+        <h2>Time 1 ${p.time1} x ${p.time2} Time 2</h2>
+        <p>${data.toLocaleDateString()}</p>
+      </div>
+    `;
+  });
+}
+window.salvarPartida = salvarPartida;
+carregarPartidas();
