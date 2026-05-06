@@ -5,25 +5,30 @@
   <title>Placar IFPR</title>
 </head>
 <body>
+
   <h1>⚽ Placar IFPR</h1>
 
-  <ul id="lista"></ul>
+  <h2>🏆 Ranking de Jogadores</h2>
+  <ul id="ranking"></ul>
 
   <script>
     const jogadores = [
-      {nome: "Felipe", gols: 5},
-      {nome: "João", gols: 3}
+      {nome: "Felipe", time: "Time 1", gols: 5, assistencias: 2},
+      {nome: "João", time: "Time 2", gols: 3, assistencias: 4},
+      {nome: "Carlos", time: "Time 1", gols: 7, assistencias: 1}
     ];
 
+    // Ordena por gols
     jogadores.sort((a, b) => b.gols - a.gols);
 
-    const lista = document.getElementById("lista");
+    const ranking = document.getElementById("ranking");
 
     jogadores.forEach(j => {
       const li = document.createElement("li");
-      li.textContent = j.nome + " - " + j.gols + " gols";
-      lista.appendChild(li);
+      li.textContent = `${j.nome} (${j.time}) - ⚽ ${j.gols} | 🎯 ${j.assistencias}`;
+      ranking.appendChild(li);
     });
   </script>
+
 </body>
 </html>
