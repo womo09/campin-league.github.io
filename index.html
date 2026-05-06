@@ -59,6 +59,14 @@ button {
   margin-top: 20px;
 }
 
+  .rank-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
 .card {
   width: 220px;
   background: #111827;
@@ -67,8 +75,28 @@ button {
   position: relative;
 }
 
-.top {
+  .card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00ffcc;
+}
+
+.top:nth-child(1) {
   border: 2px solid gold;
+  box-shadow: 0 0 15px gold;
+}
+
+.top:nth-child(2) {
+  border: 2px solid silver;
+  box-shadow: 0 0 10px silver;
+}
+
+.top:nth-child(3) {
+  border: 2px solid #cd7f32;
+  box-shadow: 0 0 10px #cd7f32;
 }
 
 img {
@@ -128,9 +156,9 @@ img {
 <button onclick="salvar()">Salvar</button>
 
   <h1>🏆 Top 3 Jogadores</h1>
-<div id="top3" class="container"></div>
+<div id="top3" class="rank-container"></div>
 
-<div class="container" id="perfil"></div>
+<div class="rank-container" id="perfil"></div>
 
 </div>
 
