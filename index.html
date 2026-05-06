@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Placar IFPR</title>
+</head>
+<body>
+  <h1>⚽ Placar IFPR</h1>
+
+  <ul id="lista"></ul>
+
+  <script>
+    const jogadores = [
+      {nome: "Felipe", gols: 5},
+      {nome: "João", gols: 3}
+    ];
+
+    jogadores.sort((a, b) => b.gols - a.gols);
+
+    const lista = document.getElementById("lista");
+
+    jogadores.forEach(j => {
+      const li = document.createElement("li");
+      li.textContent = j.nome + " - " + j.gols + " gols";
+      lista.appendChild(li);
+    });
+  </script>
+</body>
+</html>
