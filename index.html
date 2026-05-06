@@ -163,7 +163,7 @@ function overall(v, c) {
   return Math.round((v + c) / 2);
 }
 
-function mostrarTela(tela) {
+window.mostrarTela = function(tela) {
   document.getElementById("tela-jogadores").style.display = "none";
   document.getElementById("tela-partidas").style.display = "none";
 
