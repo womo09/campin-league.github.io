@@ -127,6 +127,9 @@ img {
 
 <button onclick="salvar()">Salvar</button>
 
+  <h1>🏆 Top 3 Jogadores</h1>
+<div id="top3" class="container"></div>
+
 <div class="container" id="perfil"></div>
 
 </div>
@@ -165,8 +168,8 @@ function limitar(v) {
   return Math.max(0, Math.min(100, v));
 }
 
-function overall(v, c) {
-  return Math.round((v + c) / 2);
+function overall(g, a) {
+  return (g || 0) + (a || 0);
 }
 
 window.mostrarTela = function(tela) {
@@ -227,7 +230,21 @@ async function carregar() {
     jogadores.push({ id: d.id, ...d.data() });
   });
 
-  jogadores.sort((a, b) => overall(b.gols, b.assistencias) - overall(a.velocidade, a.chute));
+  jogadores.sort((a, b) => overall(b.gols, b.assistencias) - overall(a.gols, a.assistencias));
+
+  const topDiv = document.getElementById("top3");
+topDiv.innerHTML = "";
+
+jogadores.slice(0, 3).forEach((j, i) => {
+  topDiv.innerHTML += `
+    <div class="card top">
+      <h2>#${i + 1} ${j.nome}</h2>
+      <p>🏆 Pontos: ${overall(j.gols, j.assistencias)}</p>
+      <p>⚽ ${j.gols || 0}</p>
+      <p>🎯 ${j.assistencias || 0}</p>
+    </div>
+  `;
+});
 
   jogadores.forEach((j, index) => {
     div.innerHTML += `
@@ -270,9 +287,11 @@ async function carregarPartidas() {
 
   div.innerHTML = "";
 
-  querySnapshot.forEach((doc) => {
-    const p = { id: doc.id, ...doc.data() };
-    const data = new Date(p.data.seconds * 1000);
+  querySnapshot.forEach((d) => {
+    const p = { id: d.id, ...d.data() };
+    const data = p.data?.seconds 
+  ? new Date(p.data.seconds * 1000) 
+  : new Date();
 
    div.innerHTML += `
   <div class="card">
