@@ -1,198 +1,248 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Placar IFPR</title>
+<meta charset="UTF-8">
+<title>Placar IFPR</title>
 
-  <style>
-    body {
-      background: linear-gradient(135deg, #020617, #0f172a);
-      color: white;
-      font-family: Arial;
-      text-align: center;
-    }
+<style>
+body {
+  background: linear-gradient(135deg, #020617, #0f172a);
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
 
-    h1 {
-      color: #00ffcc;
-    }
+/* MENU */
+.menu {
+  background: #111827;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+}
 
-    input, select {
-      margin: 5px;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      width: 200px;
-    }
+.menu button {
+  background: transparent;
+  color: white;
+  border: 1px solid #00ffcc;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
-    button {
-      padding: 10px 20px;
-      background: #00ffcc;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+/* INPUTS */
+input, select {
+  margin: 5px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  width: 200px;
+}
 
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-    }
+button {
+  padding: 10px;
+  margin-top: 10px;
+  background: #00ffcc;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
-    .card {
-      width: 220px;
-      background: linear-gradient(135deg, #111827, #1f2937);
-      border-radius: 15px;
-      padding: 15px;
-      box-shadow: 0 0 15px rgba(0,255,200,0.3);
-      position: relative;
-    }
+/* CARDS */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
 
-    .top {
-      border: 2px solid gold;
-      box-shadow: 0 0 20px gold;
-    }
+.card {
+  width: 220px;
+  background: #111827;
+  border-radius: 15px;
+  padding: 15px;
+  position: relative;
+}
 
-    img {
-      width: 100%;
-      border-radius: 10px;
-      height: 150px;
-      object-fit: cover;
-    }
+.top {
+  border: 2px solid gold;
+}
 
-    .overall {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 22px;
-      color: gold;
-      font-weight: bold;
-    }
+img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}
 
-    .pos {
-      font-size: 14px;
-      color: #00ffcc;
-    }
-  </style>
+.overall {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: gold;
+  font-size: 20px;
+}
+
+.delete {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: red;
+  border: none;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+</style>
 </head>
 
 <body>
 
-  <h1>⚽ Criar Jogador</h1>
+<!-- MENU -->
+<div class="menu">
+  <button onclick="mostrarTela('jogadores')">👤 Jogadores</button>
+  <button onclick="mostrarTela('partidas')">⚽ Partidas</button>
+</div>
 
-  <input id="nome" placeholder="Nome"><br>
-  <input type="number" id="velocidade" placeholder="Velocidade (0-100)"><br>
-  <input type="number" id="chute" placeholder="Chute (0-100)"><br>
+<!-- TELA JOGADORES -->
+<div id="tela-jogadores">
 
-  <select id="posicao">
-    <option>ATA</option>
-    <option>MEI</option>
-    <option>ZAG</option>
-    <option>GOL</option>
-  </select><br>
+<h1>⚽ Criar Jogador</h1>
 
-  <input type="file" id="foto"><br>
+<input id="nome" placeholder="Nome"><br>
+<input type="number" id="velocidade" placeholder="Velocidade (0-100)"><br>
+<input type="number" id="chute" placeholder="Chute (0-100)"><br>
 
-  <button onclick="salvar()">Salvar</button>
+<select id="posicao">
+  <option>ATA</option>
+  <option>MEI</option>
+  <option>ZAG</option>
+  <option>GOL</option>
+</select><br>
 
-  <div class="container" id="perfil"></div>
+<input type="file" id="foto"><br>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<button onclick="salvar()">Salvar</button>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDbi2hDWmR6yw0AoA7dpTlZEWtP7Vw7F4w",
-      authDomain: "placar-ifpr.firebaseapp.com",
-      projectId: "placar-ifpr",
-      storageBucket: "placar-ifpr.firebasestorage.app",
-      messagingSenderId: "660088722534",
-      appId: "1:660088722534:web:6ffb8e3075fb5ccca789a7"
+<div class="container" id="perfil"></div>
+
+</div>
+
+<!-- TELA PARTIDAS -->
+<div id="tela-partidas" style="display:none;">
+  <h1>⚽ Partidas</h1>
+  <p>Em breve: sistema de jogos 👀</p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDbi2hDWmR6yw0AoA7dpTlZEWtP7Vw7F4w",
+  authDomain: "placar-ifpr.firebaseapp.com",
+  projectId: "placar-ifpr",
+  storageBucket: "placar-ifpr.firebasestorage.app",
+  messagingSenderId: "660088722534",
+  appId: "1:660088722534:web:6ffb8e3075fb5ccca789a7"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const SENHA_ADMIN = "1234";
+
+function limitar(v) {
+  return Math.max(0, Math.min(100, v));
+}
+
+function overall(v, c) {
+  return Math.round((v + c) / 2);
+}
+
+function mostrarTela(tela) {
+  document.getElementById("tela-jogadores").style.display = "none";
+  document.getElementById("tela-partidas").style.display = "none";
+
+  document.getElementById("tela-" + tela).style.display = "block";
+}
+
+async function salvar() {
+  const nome = document.getElementById("nome").value;
+  let velocidade = limitar(document.getElementById("velocidade").value);
+  let chute = limitar(document.getElementById("chute").value);
+  const posicao = document.getElementById("posicao").value;
+
+  const file = document.getElementById("foto").files[0];
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = async function() {
+      salvarBanco(nome, velocidade, chute, posicao, reader.result);
     };
+    reader.readAsDataURL(file);
+  } else {
+    salvarBanco(nome, velocidade, chute, posicao, "");
+  }
+}
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+async function salvarBanco(nome, velocidade, chute, posicao, foto) {
+  await addDoc(collection(db, "jogadores"), {
+    nome, velocidade, chute, posicao, foto
+  });
 
-    function limitar(v) {
-      return Math.max(0, Math.min(100, v));
-    }
+  carregar();
+}
 
-    function calcularOverall(v, c) {
-      return Math.round((v + c) / 2);
-    }
+async function apagar(id) {
+  const senha = prompt("Senha para apagar:");
 
-    async function salvar() {
-      const nome = document.getElementById("nome").value;
-      let velocidade = limitar(document.getElementById("velocidade").value);
-      let chute = limitar(document.getElementById("chute").value);
-      const posicao = document.getElementById("posicao").value;
+  if (senha !== SENHA_ADMIN) {
+    alert("Senha incorreta");
+    return;
+  }
 
-      const file = document.getElementById("foto").files[0];
-      let fotoBase64 = "";
+  await deleteDoc(doc(db, "jogadores", id));
+  carregar();
+}
 
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async function() {
-          fotoBase64 = reader.result;
-          salvarBanco(nome, velocidade, chute, posicao, fotoBase64);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        salvarBanco(nome, velocidade, chute, posicao, fotoBase64);
-      }
-    }
+async function carregar() {
+  const querySnapshot = await getDocs(collection(db, "jogadores"));
+  const div = document.getElementById("perfil");
 
-    async function salvarBanco(nome, velocidade, chute, posicao, foto) {
-      await addDoc(collection(db, "jogadores"), {
-        nome,
-        velocidade,
-        chute,
-        posicao,
-        foto
-      });
+  div.innerHTML = "";
 
-      carregar();
-    }
+  let jogadores = [];
 
-    async function carregar() {
-      const querySnapshot = await getDocs(collection(db, "jogadores"));
-      const div = document.getElementById("perfil");
+  querySnapshot.forEach((d) => {
+    jogadores.push({ id: d.id, ...d.data() });
+  });
 
-      div.innerHTML = "";
+  jogadores.sort((a, b) => overall(b.velocidade, b.chute) - overall(a.velocidade, a.chute));
 
-      let jogadores = [];
+  jogadores.forEach((j, index) => {
+    div.innerHTML += `
+      <div class="card ${index === 0 ? "top" : ""}">
+        <button class="delete" onclick="apagar('${j.id}')">X</button>
+        <div class="overall">${overall(j.velocidade, j.chute)}</div>
+        <img src="${j.foto || ""}">
+        <h2>${j.nome}</h2>
+        <p>${j.posicao}</p>
+        <p>⚡ ${j.velocidade}</p>
+        <p>💥 ${j.chute}</p>
+      </div>
+    `;
+  });
+}
 
-      querySnapshot.forEach((doc) => {
-        jogadores.push(doc.data());
-      });
+window.salvar = salvar;
+window.apagar = apagar;
 
-      // ranking por overall
-      jogadores.sort((a, b) =>
-        calcularOverall(b.velocidade, b.chute) -
-        calcularOverall(a.velocidade, a.chute)
-      );
-
-      jogadores.forEach((j, index) => {
-        const overall = calcularOverall(j.velocidade, j.chute);
-
-        div.innerHTML += `
-          <div class="card ${index === 0 ? "top" : ""}">
-            <div class="overall">${overall}</div>
-            <img src="${j.foto || ""}">
-            <h2>${j.nome}</h2>
-            <div class="pos">${j.posicao}</div>
-            <p>⚡ ${j.velocidade}</p>
-            <p>💥 ${j.chute}</p>
-          </div>
-        `;
-      });
-    }
-
-    window.salvar = salvar;
-
-    carregar();
-  </script>
+carregar();
+</script>
 
 </body>
 </html>
