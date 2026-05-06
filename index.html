@@ -113,8 +113,8 @@ img {
 <h1>⚽ Criar Jogador</h1>
 
 <input id="nome" placeholder="Nome"><br>
-<input type="number" id="velocidade" placeholder="Velocidade (0-100)"><br>
-<input type="number" id="chute" placeholder="Chute (0-100)"><br>
+<input type="number" id="gols" placeholder="Gols"><br>
+<input type="number" id="assistencias" placeholder="Assistências"><br>
 
 <select id="posicao">
   <option>ATA</option>
@@ -195,9 +195,9 @@ async function salvar() {
   }
 }
 
-async function salvarBanco(nome, velocidade, chute, posicao, foto) {
+async function salvarBanco(nome, gols, assistencias, posicao, foto) {
   await addDoc(collection(db, "jogadores"), {
-    nome, velocidade, chute, posicao, foto
+    nome, gols, assistencias, posicao, foto
   });
 
   carregar();
