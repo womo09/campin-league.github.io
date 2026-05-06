@@ -1,68 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Placar IFPR</title>
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #020617, #0f172a);
+      color: white;
+      font-family: Arial;
+      text-align: center;
+    }
+
+    h1 {
+      color: #00ffcc;
+    }
+
+    input, select {
+      margin: 5px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      width: 200px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #00ffcc;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .card {
+      width: 220px;
+      background: linear-gradient(135deg, #111827, #1f2937);
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0 0 15px rgba(0,255,200,0.3);
+      position: relative;
+    }
+
+    .top {
+      border: 2px solid gold;
+      box-shadow: 0 0 20px gold;
+    }
+
+    img {
+      width: 100%;
+      border-radius: 10px;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .overall {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 22px;
+      color: gold;
+      font-weight: bold;
+    }
+
+    .pos {
+      font-size: 14px;
+      color: #00ffcc;
+    }
+  </style>
+</head>
+
 <body>
 
   <h1>⚽ Criar Jogador</h1>
 
-  <input id="nome" placeholder="Nome">
-  <input id="velocidade" placeholder="Velocidade">
-  <input id="chute" placeholder="Chute">
+  <input id="nome" placeholder="Nome"><br>
+  <input type="number" id="velocidade" placeholder="Velocidade (0-100)"><br>
+  <input type="number" id="chute" placeholder="Chute (0-100)"><br>
+
+  <select id="posicao">
+    <option>ATA</option>
+    <option>MEI</option>
+    <option>ZAG</option>
+    <option>GOL</option>
+  </select><br>
+
+  <input type="file" id="foto"><br>
 
   <button onclick="salvar()">Salvar</button>
 
-  <div id="perfil"></div>
+  <div class="container" id="perfil"></div>
 
- <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDbi2hDWmR6yw0AoA7dpTlZEWtP7Vw7F4w",
-    authDomain: "placar-ifpr.firebaseapp.com",
-    projectId: "placar-ifpr",
-    storageBucket: "placar-ifpr.firebasestorage.app",
-    messagingSenderId: "660088722534",
-    appId: "1:660088722534:web:6ffb8e3075fb5ccca789a7"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyDbi2hDWmR6yw0AoA7dpTlZEWtP7Vw7F4w",
+      authDomain: "placar-ifpr.firebaseapp.com",
+      projectId: "placar-ifpr",
+      storageBucket: "placar-ifpr.firebasestorage.app",
+      messagingSenderId: "660088722534",
+      appId: "1:660088722534:web:6ffb8e3075fb5ccca789a7"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  async function salvar() {
-    const nome = document.getElementById("nome").value;
-    const velocidade = document.getElementById("velocidade").value;
-    const chute = document.getElementById("chute").value;
+    function limitar(v) {
+      return Math.max(0, Math.min(100, v));
+    }
 
-    await addDoc(collection(db, "jogadores"), {
-      nome,
-      velocidade,
-      chute
-    });
+    function calcularOverall(v, c) {
+      return Math.round((v + c) / 2);
+    }
 
-    alert("Jogador salvo!");
+    async function salvar() {
+      const nome = document.getElementById("nome").value;
+      let velocidade = limitar(document.getElementById("velocidade").value);
+      let chute = limitar(document.getElementById("chute").value);
+      const posicao = document.getElementById("posicao").value;
+
+      const file = document.getElementById("foto").files[0];
+      let fotoBase64 = "";
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = async function() {
+          fotoBase64 = reader.result;
+          salvarBanco(nome, velocidade, chute, posicao, fotoBase64);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        salvarBanco(nome, velocidade, chute, posicao, fotoBase64);
+      }
+    }
+
+    async function salvarBanco(nome, velocidade, chute, posicao, foto) {
+      await addDoc(collection(db, "jogadores"), {
+        nome,
+        velocidade,
+        chute,
+        posicao,
+        foto
+      });
+
+      carregar();
+    }
+
+    async function carregar() {
+      const querySnapshot = await getDocs(collection(db, "jogadores"));
+      const div = document.getElementById("perfil");
+
+      div.innerHTML = "";
+
+      let jogadores = [];
+
+      querySnapshot.forEach((doc) => {
+        jogadores.push(doc.data());
+      });
+
+      // ranking por overall
+      jogadores.sort((a, b) =>
+        calcularOverall(b.velocidade, b.chute) -
+        calcularOverall(a.velocidade, a.chute)
+      );
+
+      jogadores.forEach((j, index) => {
+        const overall = calcularOverall(j.velocidade, j.chute);
+
+        div.innerHTML += `
+          <div class="card ${index === 0 ? "top" : ""}">
+            <div class="overall">${overall}</div>
+            <img src="${j.foto || ""}">
+            <h2>${j.nome}</h2>
+            <div class="pos">${j.posicao}</div>
+            <p>⚡ ${j.velocidade}</p>
+            <p>💥 ${j.chute}</p>
+          </div>
+        `;
+      });
+    }
+
+    window.salvar = salvar;
+
     carregar();
-  }
-
-  async function carregar() {
-    const querySnapshot = await getDocs(collection(db, "jogadores"));
-    const div = document.getElementById("perfil");
-
-    div.innerHTML = "";
-
-    querySnapshot.forEach((doc) => {
-      const j = doc.data();
-
-      div.innerHTML += `
-        <div class="card">
-          <h2>${j.nome}</h2>
-          <p>⚡ ${j.velocidade}</p>
-          <p>💥 ${j.chute}</p>
-        </div>
-      `;
-    });
-  }
-
-  window.salvar = salvar;
-
-  carregar();
-</script>
+  </script>
 
 </body>
+</html>
